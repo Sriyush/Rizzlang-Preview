@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import React from 'react';
-
+import { Analytics } from "@vercel/analytics/next"
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-stone-200 overflow-x-hidden font-onset-medium" >
@@ -18,6 +18,7 @@ const App: React.FC = () => {
         </main>
         <Footer />
       </div>
+      <Analytics />
     </div>
   );
 };
