@@ -41,7 +41,7 @@ export const INITIAL_RIZZ_CODE = `rizz Dog:
     drip bark():
         bruh "woof!"
     finna
-gonner
+goner
 
 x = pullup Dog()
 x.bark()`;

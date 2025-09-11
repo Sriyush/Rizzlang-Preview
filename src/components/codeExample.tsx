@@ -10,7 +10,7 @@ const LoadingSpinner: React.FC = () => (
     <div className="w-4 h-4 rounded-full animate-pulse bg-amber-500"></div>
     <div className="w-4 h-4 rounded-full animate-pulse bg-orange-500 delay-200"></div>
     <div className="w-4 h-4 rounded-full animate-pulse bg-amber-600 delay-400"></div>
-    <span className="ml-2 text-stone-300">AI is thinking...</span>
+    <span className="ml-2 text-stone-300">Just vibing with compiler...</span>
   </div>
 );
 
@@ -46,9 +46,14 @@ const handleTranslate = useCallback(async () => {
     } else {
       setError(data.error || "Compilation failed.");
     }
-  } catch (err: any) {
-    setError(err.message || "Unexpected error.");
-  } finally {
+} catch (err: unknown) {
+  if (err instanceof Error) {
+    setError(err.message);
+  } else {
+    setError("Unexpected error.");
+  }
+}
+ finally {
     setIsLoading(false);
   }
 }, [rizzCode]);
@@ -89,7 +94,7 @@ const handleTranslate = useCallback(async () => {
               {error && <div className="text-red-400 whitespace-pre-wrap">{error}</div>}
               {output && (
                 <div>
-                  <h4 className="text-stone-400 font-bold mb-2">// Your sizzling Ouput</h4>
+                  <h4 className="text-stone-400 font-bold mb-2"> Your sizzling Ouput</h4>
                   <pre className="text-green-300 bg-black/20 p-3 rounded-md overflow-x-auto whitespace-pre-wrap"><code>{output.cppCode}</code></pre>
                   {/* <div className="flex items-center gap-2 my-4 text-amber-300">
                      <SparklesIcon />

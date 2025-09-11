@@ -4,14 +4,13 @@ import path from "path";
 import fs from "fs";
 import os from "os";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   const { code } = await req.json();
 
   if (!code) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
-  // Make a temp file with .rizz extension
   const tempFilePath = path.join(os.tmpdir(), `input_${Date.now()}.rizz`);
   fs.writeFileSync(tempFilePath, code);
 
