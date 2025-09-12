@@ -40,7 +40,7 @@ const DocsPage: React.FC<{ onNavigate: (page: 'home' | 'docs' | 'playground') =>
             <P>This isn’t just a language for one dev — it’s a community project. Contribute, experiment, and help it grow. Let’s build something iconic together.</P>
 
             <H2>Installation</H2>
-            <P>You can also install in your system. Right now it's only available for macOS/Linux via Homebrew. Soon it will be available for Windows too.</P>
+            <P>You can also install in your system. Right now it&apos;s only available for macOS/Linux via Homebrew. Soon it will be available for Windows too.</P>
             <CodeBlock lang="install">
 {`brew install sriyush/rizzlang/rizzlang
 //to check the version
