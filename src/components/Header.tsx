@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
           <button onClick={() => onNavigate('docs')} className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors">Docs</button>
           <button onClick={() => onNavigate('playground')} className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors">PlayGround</button>
           <a 
-            href="https://github.com" 
+            href="https://github.com/Sriyush/RizzLang" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors"
