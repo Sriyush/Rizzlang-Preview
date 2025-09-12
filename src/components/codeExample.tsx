@@ -87,7 +87,7 @@ const handleTranslate = useCallback(async () => {
           <div className="bg-neutral-900/50 p-6 rounded-xl border border-neutral-800">
             <div className="flex items-center gap-2 mb-4 text-orange-400">
               <CpuChipIcon />
-              <h3 className="text-lg font-bold">C++ Output & Explanation</h3>
+              <h3 className="text-lg font-bold">Rizz++ Output</h3>
             </div>
             <div className="w-full h-96 bg-black/50 text-stone-300 p-4 rounded-md font-mono text-sm border border-neutral-700 overflow-y-auto">
               {isLoading && <div className="h-full flex items-center justify-center"><LoadingSpinner /></div>}
