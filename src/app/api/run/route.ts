@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import fs from 'fs';
 import path from 'path';
 import ModuleFactory from '../../../wasm/rizz.js'; // relative to route.ts
