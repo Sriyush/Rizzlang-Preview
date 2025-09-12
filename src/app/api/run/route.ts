@@ -1,49 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
-import { spawn } from "child_process";
-import path from "path";
-import fs from "fs";
-import os from "os";
+import fs from 'fs';
+import path from 'path';
+import ModuleFactory from '../../../wasm/rizz.js'; // relative to route.ts
+import { NextRequest, NextResponse } from 'next/server.js';
 
-export async function POST(req: NextRequest): Promise<Response> {
+let rizzModule: any = null;
+
+async function loadRizz() {
+  if (rizzModule) return rizzModule;
+
+  const wasmPath = path.join(process.cwd(), 'src/wasm/rizz.wasm');
+  const wasmBinary = fs.readFileSync(wasmPath);
+
+  rizzModule = await ModuleFactory({ wasmBinary, noInitialRun: true });
+  return rizzModule;
+}
+
+export async function POST(req: NextRequest) {
   const { code } = await req.json();
-
   if (!code) {
     return NextResponse.json({ error: "No code provided" }, { status: 400 });
   }
 
-  const tempFilePath = path.join(os.tmpdir(), `input_${Date.now()}.rizz`);
-  fs.writeFileSync(tempFilePath, code);
-
-  const binaryPath = path.join(process.cwd(), "rizz");
-
-  return new Promise((resolve) => {
-    const child = spawn(binaryPath, [tempFilePath], { cwd: process.cwd() });
-
-    let output = "";
-    let error = "";
-
-    child.stdout.on("data", (data) => {
-      output += data.toString();
-    });
-
-    child.stderr.on("data", (data) => {
-      error += data.toString();
-    });
-
-    child.on("close", (codeExit) => {
-      // Clean up temp file
-      fs.unlinkSync(tempFilePath);
-
-      if (codeExit !== 0 || error) {
-        resolve(
-          NextResponse.json(
-            { error: error || "Compilation failed" },
-            { status: 500 }
-          )
-        );
-      } else {
-        resolve(NextResponse.json({ output }));
-      }
-    });
-  });
+  try {
+    const rizz = await loadRizz();
+    const runCode = rizz.cwrap("runCodeC", "string", ["string"]);
+    const output = runCode(code);
+    return NextResponse.json({ output });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || "Execution failed" },
+      { status: 500 }
+    );
+  }
 }
