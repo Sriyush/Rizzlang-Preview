@@ -7,7 +7,7 @@ export const FEATURES: Feature[] = [
   {
     icon: <CodeIcon />,
     title: 'Genz Syntax',
-    description: 'Write code that sounds like you talk. `sus` for if, `vibeCheck` for asserts. It just makes sense, no cap.',
+    description: 'Write code that sounds like you talk. `bet` for if, `drip` for function. It just makes sense, no cap.',
   },
   {
     icon: <ZapIcon />,
