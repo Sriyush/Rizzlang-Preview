@@ -67,7 +67,10 @@ const Hero: React.FC = () => {
       <motion.div 
         initial={{ opacity: 0, rotate: -5 }}
         animate={{ opacity: 1, rotate: -5, y: [0, -15, 0] }}
-        transition={{ delay: 0.5, duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ 
+          opacity: { duration: 0.5, delay: 0.5 },
+          y: { duration: 6, repeat: Infinity, ease: "easeInOut" } 
+        }}
         className="absolute bottom-20 left-10 hidden xl:block"
       >
         <div className="glass rounded-xl p-4 w-64 border border-white/10 shadow-2xl">
