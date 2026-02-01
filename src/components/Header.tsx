@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Github, Book, Play } from 'lucide-react';
+import { RizzLogo } from './Logo';
 
 interface HeaderProps {
   onNavigate: (page: 'home' | 'docs' | 'playground') => void;
@@ -34,10 +35,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
               onClick={() => onNavigate('home')}
               className="flex items-center gap-2 group"
             >
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black font-bold text-lg group-hover:scale-110 transition-transform">
-                R
-              </div>
-              <span className="font-bold text-white tracking-tight hidden sm:block">Rizz++</span>
+              <RizzLogo className="w-10 h-10 group-hover:scale-110 transition-transform duration-300" />
+              <span className="font-bold text-white tracking-tight hidden sm:block text-xl">Rizz++</span>
             </button>
 
             {/* Desktop Nav */}
