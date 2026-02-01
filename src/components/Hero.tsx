@@ -77,9 +77,9 @@ const Hero: React.FC = () => {
             <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
           </div>
           <pre className="font-mono text-xs text-gray-400">
-            <span className="text-purple-400">yo_mama</span> main() {'{'}{'\n'}
-            {'  '}spit(<span className="text-green-400">&quot;Hello World&quot;</span>);{'\n'}
-            {'  '}fr fr;{'\n'}
+            <span className="text-purple-400">drip</span> vibe_check() {'{'}{'\n'}
+            {'  '}bruh <span className="text-green-400">&quot;Hello World&quot;</span>;{'\n'}
+            {'  '}no_cap;{'\n'}
             {'}'}
           </pre>
         </div>
