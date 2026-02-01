@@ -1,18 +1,9 @@
-'use client'
-import React, { useState, useCallback, use } from 'react';
-// import { translateRizzCode } from '../services/geminiService';
+'use client';
+import React, { useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { Play, Loader2, Terminal, AlertCircle } from 'lucide-react';
 import { INITIAL_RIZZ_CODE } from '../constants';
-import { CpuChipIcon, SparklesIcon, TerminalIcon } from './IconComponents';
 import type { TranslationResult } from '../types';
-
-const LoadingSpinner: React.FC = () => (
-  <div className="flex items-center justify-center space-x-2">
-    <div className="w-4 h-4 rounded-full animate-pulse bg-amber-500"></div>
-    <div className="w-4 h-4 rounded-full animate-pulse bg-orange-500 delay-200"></div>
-    <div className="w-4 h-4 rounded-full animate-pulse bg-amber-600 delay-400"></div>
-    <span className="ml-2 text-stone-300">Just vibing with compiler...</span>
-  </div>
-);
 
 const CodeExample: React.FC = () => {
   const [rizzCode, setRizzCode] = useState<string>(INITIAL_RIZZ_CODE);
@@ -20,102 +11,127 @@ const CodeExample: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-const handleTranslate = useCallback(async () => {
-  if (!rizzCode.trim()) {
-    setError("Please enter some Rizz++ code to translate.");
-    return;
-  }
-  setIsLoading(true);
-  setError(null);
-  setOutput(null);
-
-  try {
-    const res = await fetch("/api/run", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: rizzCode }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      setOutput({
-        cppCode: data.output, 
-        explanation: "You just rizzed the compiler.", 
-      });
-    } else {
-      setError(data.error || "Compilation failed.");
+  const handleTranslate = useCallback(async () => {
+    if (!rizzCode.trim()) {
+      setError("Bruh, write some code first.");
+      return;
     }
-} catch (err: unknown) {
-  if (err instanceof Error) {
-    setError(err.message);
-  } else {
-    setError("Unexpected error.");
-  }
-}
- finally {
-    setIsLoading(false);
-  }
-}, [rizzCode]);
+    setIsLoading(true);
+    setError(null);
+    setOutput(null);
+
+    try {
+      const res = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: rizzCode }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setOutput({
+          cppCode: data.output, 
+          explanation: "Compiled successfully. No cap.", 
+        });
+      } else {
+        setError(data.error || "Compilation failed. L + Ratio.");
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [rizzCode]);
 
   return (
-    <section id="try-it" className="py-20 bg-black/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-2">Try Rizz++ Live</h2>
-          <p className="text-lg text-stone-400 max-w-2xl mx-auto">
-            Drop your Rizz++ code below and let the compiler rizz it up!
-          </p>
-        </div>
+    <section id="try-it" className="py-24 bg-[#050505]">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4"
+        >
+          <div>
+            <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+              <Terminal className="text-purple-500" />
+              Playground
+            </h2>
+            <p className="text-gray-500 mt-1">Write Rizz++, get C++.</p>
+          </div>
+          
+          <button
+            onClick={handleTranslate}
+            disabled={isLoading}
+            className="flex items-center gap-2 px-6 py-3 bg-white text-black font-bold rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
+          >
+            {isLoading ? <Loader2 className="animate-spin" /> : <Play fill="black" size={18} />}
+            {isLoading ? 'Cooking...' : 'Run Code'}
+          </button>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Input Section */}
-          <div className="bg-neutral-900/50 p-6 rounded-xl border border-neutral-800">
-            <div className="flex items-center gap-2 mb-4 text-amber-400">
-              <TerminalIcon />
-              <h3 className="text-lg font-bold">Rizz++ Code</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-[600px]">
+          {/* Editor */}
+          <div className="relative group rounded-xl overflow-hidden border border-white/10 bg-[#0a0a0a]">
+            <div className="absolute top-0 left-0 right-0 h-10 bg-[#111] flex items-center px-4 border-b border-white/5 gap-2">
+              <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+              <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+              <span className="ml-4 text-xs text-gray-500 font-mono">main.rizz</span>
             </div>
             <textarea
               value={rizzCode}
               onChange={(e) => setRizzCode(e.target.value)}
-              className="w-full h-96 bg-black/50 text-stone-200 p-4 rounded-md font-mono text-sm border border-neutral-700 focus:ring-2 focus:ring-amber-500 focus:outline-none"
-              placeholder="Enter your Rizz++ code here..."
+              className="w-full h-full pt-14 p-4 bg-transparent text-gray-300 font-mono text-sm focus:outline-none resize-none selection:bg-purple-500/30"
+              spellCheck={false}
             />
           </div>
 
-          {/* Output Section */}
-          <div className="bg-neutral-900/50 p-6 rounded-xl border border-neutral-800">
-            <div className="flex items-center gap-2 mb-4 text-orange-400">
-              <CpuChipIcon />
-              <h3 className="text-lg font-bold">Rizz++ Output</h3>
+          {/* Terminal Output */}
+          <div className="relative rounded-xl overflow-hidden border border-white/10 bg-black">
+            <div className="absolute top-0 left-0 right-0 h-10 bg-[#111] flex items-center px-4 border-b border-white/5 justify-between">
+              <span className="text-xs text-gray-500 font-mono">Terminal</span>
+              {output && <span className="text-xs text-green-500 font-mono">● Ready</span>}
             </div>
-            <div className="w-full h-96 bg-black/50 text-stone-300 p-4 rounded-md font-mono text-sm border border-neutral-700 overflow-y-auto">
-              {isLoading && <div className="h-full flex items-center justify-center"><LoadingSpinner /></div>}
-              {error && <div className="text-red-400 whitespace-pre-wrap">{error}</div>}
-              {output && (
-                <div>
-                  <h4 className="text-stone-400 font-bold mb-2"> Your sizzling Ouput</h4>
-                  <pre className="text-green-300 bg-black/20 p-3 rounded-md overflow-x-auto whitespace-pre-wrap"><code>{output.cppCode}</code></pre>
-                  {/* <div className="flex items-center gap-2 my-4 text-amber-300">
-                     <SparklesIcon />
-                     <h4 className="font-bold">Gemini's Explanation</h4>
-                  </div> */}
-                  <p className="text-stone-300 font-sans whitespace-pre-wrap text-base">{output.explanation}</p>
+            
+            <div className="w-full h-full pt-14 p-4 font-mono text-sm overflow-auto">
+              {!output && !error && !isLoading && (
+                <div className="text-gray-600">
+                  <p className="mb-2">Rizz++ Compiler v1.0.0</p>
+                  <p>Waiting for input...</p>
                 </div>
               )}
-              {!isLoading && !error && !output && <div className="text-stone-500">Click the button to see the magic...</div>}
+
+              {isLoading && (
+                <div className="text-yellow-500 animate-pulse">
+                  &gt; Compiling source...
+                </div>
+              )}
+
+              {error && (
+                <div className="text-red-400">
+                  <div className="flex items-center gap-2 mb-2 text-red-500 font-bold">
+                    <AlertCircle size={16} /> Error
+                  </div>
+                  <pre className="whitespace-pre-wrap font-mono">{error}</pre>
+                </div>
+              )}
+
+              {output && (
+                <div className="space-y-4">
+                  <div className="text-gray-400">&gt; g++ main.cpp -o main</div>
+                  <div className="text-gray-400">&gt; ./main</div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/5 text-green-300">
+                    <pre className="whitespace-pre-wrap">{output.cppCode}</pre>
+                  </div>
+                  <div className="text-gray-500 text-xs mt-4 border-t border-white/5 pt-2">
+                    {output.explanation}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        <div className="mt-8 text-center">
-          <button
-            onClick={handleTranslate}
-            disabled={isLoading}
-            className="bg-neutral-800 hover:bg-neutral-700 border border-neutral-600 text-white font-bold py-3 px-12 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
-          >
-            {isLoading ? 'Compiling...' : 'Compiler and Run'}
-          </button>
         </div>
       </div>
     </section>

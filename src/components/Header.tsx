@@ -1,12 +1,7 @@
+"use client";
 import React, { useState } from 'react';
-
-const HamburgerIcon: React.FC = () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-);
-
-const CloseIcon: React.FC = () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-);
+import { motion, AnimatePresence } from 'framer-motion';
+import { Menu, X, Github, Book, Play } from 'lucide-react';
 
 interface HeaderProps {
   onNavigate: (page: 'home' | 'docs' | 'playground') => void;
@@ -15,83 +10,104 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleNavClick = (page: 'home' | 'docs' | 'playground') => {
-    onNavigate(page);
-    setIsMenuOpen(false);
-  };
-  
-  const handleHomeClick = () => {
-    onNavigate('home');
-    setIsMenuOpen(false);
-  }
+  const navItems = [
+    { name: 'Docs', id: 'docs', icon: <Book size={18} /> },
+    { name: 'Playground', id: 'playground', icon: <Play size={18} /> },
+  ];
 
   return (
     <>
-      <header className="fixed py-6 px-4 sm:px-8 md:px-12 top-0 left-0 w-full z-50">
-        <div className="container mx-auto flex justify-between items-center">
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center py-6 px-4"
+      >
+        <div className="glass rounded-full px-6 py-3 flex items-center justify-between gap-8 bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl shadow-purple-500/10">
           <button 
-            onClick={handleHomeClick}
-            className="bg-black/50 cursor-pointer backdrop-blur-sm border border-gray-700/50 rounded-full py-2 px-4 flex items-center gap-3 cursor-pointer hover:border-gray-600 transition-colors"
-            aria-label="Go to homepage"
+            onClick={() => onNavigate('home')}
+            className="flex items-center gap-2 group"
           >
-              <h1 className="text-md font-bold text-white">
-                Rizz++
-              </h1>
-              <span className="bg-black border border-white/20 text-gray-300 text-xs font-semibold px-2 py-0.5 rounded-full">v1.0-alpha</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center font-bold text-white group-hover:rotate-12 transition-transform">
+              R
+            </div>
+            <span className="font-bold text-white tracking-tight">Rizz++</span>
+            <span className="px-2 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-gray-400 border border-white/5">v1.0</span>
           </button>
-          
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-2 bg-black/50 backdrop-blur-sm border border-gray-700/50 rounded-full py-2 px-3">
-            <button onClick={() => onNavigate('docs')} className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors">Docs</button>
-            <button onClick={() => onNavigate('playground')} className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors">PlayGround</button>
-            <a 
-              href="https://github.com/Sriyush/RizzLang" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-300 hover:bg-gray-700/50 rounded-full px-3 py-1 transition-colors"
-            >
-              GitHub
-            </a>
-          </nav>
-          
-          {/* Mobile Nav Toggle */}
-          <div className="md:hidden">
-            <button 
-              onClick={() => setIsMenuOpen(true)} 
-              className="bg-black/50 backdrop-blur-sm border border-gray-700/50 rounded-full p-2 text-white"
-              aria-label="Open navigation menu"
-            >
-              <HamburgerIcon />
-            </button>
-          </div>
-        </div>
-      </header>
 
-      {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 bg-black/70 backdrop-blur-lg z-[100] flex flex-col items-center justify-center transition-opacity duration-300 md:hidden ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <div className="absolute top-6 right-4 sm:right-8">
-             <button 
-              onClick={() => setIsMenuOpen(false)} 
-              className="p-2 text-white"
-              aria-label="Close navigation menu"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-          <nav className="flex flex-col items-center gap-8 text-center">
-            <button onClick={() => handleNavClick('docs')} className="text-2xl text-gray-300 hover:text-white transition-colors">Docs</button>
-            <button onClick={() => handleNavClick('playground')} className="text-2xl text-gray-300 hover:text-white transition-colors">PlayGround</button>
-            <a 
-              href="https://github.com/Sriyush/RizzLang" 
-              target="_blank" 
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={() => onNavigate(item.id as 'home' | 'docs' | 'playground')}
+                className="px-4 py-2 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2"
+              >
+                {item.icon}
+                {item.name}
+              </button>
+            ))}
+            <a
+              href="https://github.com/Sriyush/RizzLang"
+              target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setIsMenuOpen(false)}
-              className="text-2xl text-gray-300 hover:text-white transition-colors"
+              className="ml-2 px-4 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gray-200 transition-colors flex items-center gap-2"
             >
+              <Github size={18} />
               GitHub
             </a>
           </nav>
-      </div>
+
+          {/* Mobile Toggle */}
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            className="md:hidden p-2 text-gray-300 hover:text-white"
+          >
+            <Menu />
+          </button>
+        </div>
+      </motion.header>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center md:hidden"
+          >
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute top-8 right-8 p-4 text-gray-400 hover:text-white"
+            >
+              <X size={32} />
+            </button>
+            
+            <div className="flex flex-col gap-8 text-center">
+              {navItems.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    onNavigate(item.id as 'home' | 'docs' | 'playground');
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-3xl font-bold text-white flex items-center justify-center gap-3"
+                >
+                  {item.icon} {item.name}
+                </button>
+              ))}
+              <a
+                href="https://github.com/Sriyush/RizzLang"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-3xl font-bold text-white flex items-center justify-center gap-3"
+              >
+                <Github size={28} /> GitHub
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

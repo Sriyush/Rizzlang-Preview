@@ -7,16 +7,16 @@ import Hero from '@/components/Hero';
 import React, { useEffect, useState } from 'react';
 import { Analytics } from "@vercel/analytics/next"
 import DocsPage from '@/components/DocsPage';
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
 
   const navigate = (page: 'home' | 'docs' | 'playground') => {
     if (page === 'playground') {
       setCurrentPage('home');
-      // Use a timeout to ensure the component is rendered before scrolling
       setTimeout(() => {
         document.getElementById('try-it')?.scrollIntoView({ behavior: 'smooth' });
-      }, 0);
+      }, 100);
       window.history.pushState(null, '', `/`);
     } else {
       setCurrentPage(page);
@@ -31,7 +31,6 @@ const App: React.FC = () => {
       setCurrentPage(path || 'home');
     };
 
-    // Set initial page based on URL
     const path = window.location.pathname.substring(1);
     if (path === 'docs') {
       setCurrentPage('docs');
@@ -43,28 +42,21 @@ const App: React.FC = () => {
     };
   }, []);
 
-
   return (
-    <div className="min-h-screen bg-black text-gray-100 overflow-x-hidden">
-      <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_rgba(189,137,79,0.15)_0%,_rgba(0,0,0,0)_70%)] z-0"
-        aria-hidden="true"
-      ></div>
-      <div className="relative z-10">
-        <Header onNavigate={navigate} />
-        <main>
-          {currentPage === 'home' ? (
-            <>
-              <Hero />
-              <Features />
-              <CodeExample />
-            </>
-          ) : (
-            <DocsPage onNavigate={navigate} />
-          )}
-        </main>
-        <Footer />
-      </div>
+    <div className="min-h-screen bg-black text-gray-100 selection:bg-purple-500/30">
+      <Header onNavigate={navigate} />
+      <main>
+        {currentPage === 'home' ? (
+          <>
+            <Hero />
+            <Features />
+            <CodeExample />
+          </>
+        ) : (
+          <DocsPage onNavigate={navigate} />
+        )}
+      </main>
+      <Footer />
       <Analytics/>
     </div>
   );
